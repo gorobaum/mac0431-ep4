@@ -96,17 +96,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named EP4
+# Target rules for targets named ep4
 
 # Build rule for target.
-EP4: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 EP4
-.PHONY : EP4
+ep4: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ep4
+.PHONY : ep4
 
 # fast build rule for target.
-EP4/fast:
-	$(MAKE) -f CMakeFiles/EP4.dir/build.make CMakeFiles/EP4.dir/build
-.PHONY : EP4/fast
+ep4/fast:
+	$(MAKE) -f CMakeFiles/ep4.dir/build.make CMakeFiles/ep4.dir/build
+.PHONY : ep4/fast
 
 #=============================================================================
 # Target rules for targets named matrixmulti
@@ -126,7 +126,7 @@ main.o: main.c.o
 
 # target to build an object file
 main.c.o:
-	$(MAKE) -f CMakeFiles/EP4.dir/build.make CMakeFiles/EP4.dir/main.c.o
+	$(MAKE) -f CMakeFiles/ep4.dir/build.make CMakeFiles/ep4.dir/main.c.o
 .PHONY : main.c.o
 
 main.i: main.c.i
@@ -134,7 +134,7 @@ main.i: main.c.i
 
 # target to preprocess a source file
 main.c.i:
-	$(MAKE) -f CMakeFiles/EP4.dir/build.make CMakeFiles/EP4.dir/main.c.i
+	$(MAKE) -f CMakeFiles/ep4.dir/build.make CMakeFiles/ep4.dir/main.c.i
 .PHONY : main.c.i
 
 main.s: main.c.s
@@ -142,7 +142,7 @@ main.s: main.c.s
 
 # target to generate assembly for a file
 main.c.s:
-	$(MAKE) -f CMakeFiles/EP4.dir/build.make CMakeFiles/EP4.dir/main.c.s
+	$(MAKE) -f CMakeFiles/ep4.dir/build.make CMakeFiles/ep4.dir/main.c.s
 .PHONY : main.c.s
 
 opcl.o: opcl.c.o
@@ -175,8 +175,8 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... EP4"
 	@echo "... edit_cache"
+	@echo "... ep4"
 	@echo "... matrixmulti"
 	@echo "... rebuild_cache"
 	@echo "... main.o"

@@ -1,10 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-project(EP4)
+project(ep4)
 
 find_library(OPENCL OpenCL)
 message("OpenCL Library == ${OPENCL}")
 
-include_directories(~/repositorios/mac0431-ep4/opencl10)
+include_directories(~/repositorios/mac0431-ep4/opencl12)
 message("include directories: \n")
 get_directory_property(includes INCLUDE_DIRECTORIES)
 message("${includes}\n")
@@ -15,7 +15,7 @@ set(multilib opcl.c)
 set(opcllib matrixmulti)
 add_library(${opcllib} ${multilib})
 
-set(exec EP4)
+set(exec ep4)
 add_executable(${exec} main.c)
 
 target_link_libraries(${exec} ${opcllib} ${OPENCL})

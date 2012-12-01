@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "opcl.h"
 
 #define MAXSTR 128
@@ -6,7 +7,8 @@
 #define NANO 1e-6f
 
 /* Objetos do Open CL */
-cl_platform_id platform;
+cl_platform_id* platform;
+cl_platform_id platform_of_choice;
 cl_context context;
 cl_device_id* devices;
 cl_command_queue queue;
@@ -16,8 +18,8 @@ cl_event event;
 cl_mem opclMatrixA, opclMatrixB, opclMatrixC;
 cl_ulong start, finish;
 double total = 0;
-size_t sizeOfMatrix = sizeof(float)*MATRIXSIZE*MATRIXSIZE;
-
+size_t sizeOfMatrix;
+int sizeR, sizeC;
 
 /* Informações sobre os devices */
 unsigned int devices_found;
@@ -26,29 +28,37 @@ unsigned int device_used = 0;
 unsigned int opencl_create_platform(unsigned int num_platforms) {
   char name[MAXSTR];
   unsigned int num_platforms_found;
-  
-  if ( clGetPlatformIDs( num_platforms, &platform, &num_platforms_found ) == CL_SUCCESS ) {
-    /* As duas linhas abaixo são usadas para teste.
-    clGetPlatformInfo( platform, CL_PLATFORM_NAME, MAXSTR, &name, NULL );
-    printf("Nome da plataforma %s\n",name); */ 
+  int i;
+
+  if ( clGetPlatformIDs( num_platforms, NULL, &num_platforms_found ) == CL_SUCCESS ) {
+    platform = malloc(num_platforms_found*sizeof(cl_platform_id));
+    clGetPlatformIDs( num_platforms, platform, NULL );
+    /*As duas linhas abaixo são usadas para teste.*/
+    for ( i = 0; i < num_platforms; i++) {
+      clGetPlatformInfo( platform[i], CL_PLATFORM_NAME, MAXSTR, &name, NULL );
+      if (strcmp(name, "AMD Accelerated Parallel Processing") == 0) {
+        platform_of_choice = platform[i];
+      }
+    }
     return num_platforms_found;
   }
   else return -1;
 }
 
 unsigned int opencl_get_devices_id(cl_device_type device_type) {
-  unsigned int vendor_id;
+  char name[MAXSTR];
   
   /* Achando o número de devices na máquina */
-  clGetDeviceIDs(platform, device_type, 0, NULL, &devices_found);
+  clGetDeviceIDs(platform_of_choice, device_type, 0, NULL, &devices_found);
+  printf("%d\n", devices_found);
   devices = malloc(devices_found*(sizeof(cl_device_id)));
   
-  if ( clGetDeviceIDs(platform, device_type, devices_found, devices, NULL) 
+  if ( clGetDeviceIDs(platform_of_choice, device_type, devices_found, devices, NULL) 
       == CL_SUCCESS ) 
   {
-    /* As duas linhas abaixo são usadas para teste. 
-    clGetDeviceInfo( devices, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(unsigned int), &vendor_id, NULL );
-    printf("Vendor ID do Device %d\n",vendor_id); */
+    /* As duas linhas abaixo são usadas para teste. */
+    /*clGetDeviceInfo( devices[device_used], CL_DEVICE_VENDOR, sizeof(unsigned int), &name, NULL );
+    printf("Vendor do Device %s\n",name);*/
     return devices_found;
   }
   else return -1;
@@ -104,35 +114,9 @@ int buildProgram() {
     printf("program built\n");
     return -1;
   }
-  else {
-    pFile = fopen("opcl.ptx", "w");
-    if (pFile == NULL) {
-      printf("Erro na criação do .ptx\n");
-      exit(-1);
-    }
-
-    binary_size = malloc(devices_found*sizeof(size_t));
-    clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, devices_found*sizeof(size_t), (void*)binary_size, NULL); 
-    program_binary = malloc(devices_found*sizeof(char*));
-    for (count = 0; count < devices_found; count++) 
-      program_binary[count] = malloc(binary_size[0]*sizeof(char));
-    clGetProgramInfo(program, CL_PROGRAM_BINARIES, count*binary_size[0]*sizeof(char), program_binary, NULL);
-      
-    fputs(program_binary[0], pFile);
-
-    return 1;
-  }
+  return 1;
 }
 /* Fim das funções auxiliares para a criação do program */
-
-void profile_event (cl_event* profiler) {
-  clWaitForEvents(1, &event);
-  if (clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, (size_t)sizeof(cl_ulong), &start, NULL) != CL_SUCCESS) printf("Erro!\n");
-  if (clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, (size_t)sizeof(cl_ulong), &finish, NULL) != CL_SUCCESS) printf("Erro!\n");
-
-  total += (double)(finish-start);
-}
-
 
 int opencl_create_program(char* program_path) {
   char* program_source;
@@ -154,20 +138,41 @@ int opencl_create_kernel(char* kernel_name) {
   else return -1;
 }
 
-void prepare_kernel() {
+float* loadMatrix(char* fileName) {
+  FILE *pFile;
   float* MatrixA;
-  int i, j, sizeC, sizeR;
+  char line[256];
+  int i, j;
+
+  pFile = fopen(fileName, "r");
+  if (pFile == NULL) {
+    printf("Erro na leitura do arquivo com a matriz\n");
+    exit(-1);
+  }
+
+  fgets(line, 256, pFile);
+  sizeR = atoi(line);
+  fgets(line, 256, pFile);
+  sizeC = atoi(line);
+
+  sizeOfMatrix = sizeof(float)*sizeR*sizeC;
+  MatrixA = malloc(sizeOfMatrix);
+  for ( i = 0; i < sizeR; i++ ) {
+    for ( j = 0; j < sizeC; j++ ) {
+      fgets(line, 256, pFile);
+      MatrixA[i*sizeR+j] = atof(line);
+    }
+  }
+  return MatrixA;
+}
+
+void prepare_kernel(char* fileName) {
+  float* MatrixA;
+  int i, j;
   cl_int error;
   cl_mem rowSize, columnSize;
 
-  sizeC = sizeR = MATRIXSIZE;
-  MatrixA = malloc(sizeOfMatrix);
-
-  for ( i = 0; i < MATRIXSIZE; i++ ) {
-    for ( j = 0; j < MATRIXSIZE; j++ ) {
-      MatrixA[i*MATRIXSIZE+j] = i+j;
-    }
-  }
+  MatrixA = loadMatrix(fileName);
 
   /* Criação dos buffers que o OpenCL vai usar. */
   opclMatrixA = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeOfMatrix, NULL, &error);
@@ -180,11 +185,8 @@ void prepare_kernel() {
   if (error != CL_SUCCESS) printf("Erro na memoria\n");
 
   clEnqueueWriteBuffer(queue, opclMatrixA, CL_TRUE, 0, sizeOfMatrix, MatrixA, 0, NULL, &event);
-  profile_event(&event);
   clEnqueueWriteBuffer(queue, rowSize, CL_TRUE, 0, sizeof(int), &sizeR, 0, NULL, &event);
-  profile_event(&event);
   clEnqueueWriteBuffer(queue, columnSize, CL_TRUE, 0, sizeof(int), &sizeC, 0, NULL, &event);
-  profile_event(&event);
 
   clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&opclMatrixA);
   clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&opclMatrixB);
@@ -195,32 +197,30 @@ void prepare_kernel() {
   free(MatrixA);
 }
 
-int opencl_run_kernel() {
-  size_t work_dim[2] = { MATRIXSIZE, MATRIXSIZE };
-  size_t local_dim[2] = { 16, 16 };
+int opencl_run_kernel(char* fileName) {
+  size_t work_dim[2];
   float *MatrixB;
   int i, j;
 
+  prepare_kernel(fileName);
+  
   MatrixB = malloc(sizeOfMatrix);
-
-  prepare_kernel();
-  clEnqueueNDRangeKernel(queue, kernel, 2, NULL, work_dim, local_dim, 0, NULL, &event);
-  profile_event(&event);
+  work_dim[0] = sizeR;
+  work_dim[1] = sizeC;
+  clEnqueueNDRangeKernel(queue, kernel, 2, NULL, work_dim, NULL, 0, NULL, &event);
   clReleaseEvent(event);
   clFinish(queue);
 
   if( clEnqueueReadBuffer(queue, opclMatrixB, CL_TRUE, 0, sizeOfMatrix, MatrixB, 0, NULL, &event) 
       != CL_SUCCESS ) printf("ERRROROOO\n");
-  profile_event(&event);
   clReleaseEvent(event);
 
-  /*for( i = 0; i < MATRIXSIZE; i++ ) {
-    for( j = 0; j< MATRIXSIZE; j++ ) {
-      printf("B[%d][%d] = %f\n", i, j, MatrixB[i*MATRIXSIZE+j]);
+  for( i = 0; i < sizeR; i++ ) {
+    for( j = 0; j< sizeC; j++ ) {
+      printf("B[%d][%d] = %f\n", i, j, MatrixB[i*sizeR+j]);
     }
-  }*/
+  }
 
-  printf("%lf\n", total*NANO);
   free(MatrixB);
   return 1;
 }

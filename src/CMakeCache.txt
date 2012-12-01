@@ -116,7 +116,7 @@ CMAKE_OBJCOPY:FILEPATH=/usr/bin/objcopy
 CMAKE_OBJDUMP:FILEPATH=/usr/bin/objdump
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=EP4
+CMAKE_PROJECT_NAME:STATIC=ep4
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
@@ -159,6 +159,12 @@ EP4_SOURCE_DIR:STATIC=/home/beren/repositorios/mac0431-ep4/src
 
 //Path to a library.
 OPENCL:FILEPATH=/usr/lib/libOpenCL.so
+
+//Value Computed by CMake
+ep4_BINARY_DIR:STATIC=/home/beren/repositorios/mac0431-ep4/src
+
+//Value Computed by CMake
+ep4_SOURCE_DIR:STATIC=/home/beren/repositorios/mac0431-ep4/src
 
 //Dependencies for target
 matrixmulti_LIB_DEPENDS:STATIC=

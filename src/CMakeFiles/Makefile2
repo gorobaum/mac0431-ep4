@@ -50,38 +50,38 @@ CMAKE_SOURCE_DIR = /home/beren/repositorios/mac0431-ep4/src
 CMAKE_BINARY_DIR = /home/beren/repositorios/mac0431-ep4/src
 
 #=============================================================================
-# Target rules for target CMakeFiles/EP4.dir
+# Target rules for target CMakeFiles/ep4.dir
 
 # All Build rule for target.
-CMakeFiles/EP4.dir/all: CMakeFiles/matrixmulti.dir/all
-	$(MAKE) -f CMakeFiles/EP4.dir/build.make CMakeFiles/EP4.dir/depend
-	$(MAKE) -f CMakeFiles/EP4.dir/build.make CMakeFiles/EP4.dir/build
+CMakeFiles/ep4.dir/all: CMakeFiles/matrixmulti.dir/all
+	$(MAKE) -f CMakeFiles/ep4.dir/build.make CMakeFiles/ep4.dir/depend
+	$(MAKE) -f CMakeFiles/ep4.dir/build.make CMakeFiles/ep4.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/beren/repositorios/mac0431-ep4/src/CMakeFiles  1
-	@echo "Built target EP4"
-.PHONY : CMakeFiles/EP4.dir/all
+	@echo "Built target ep4"
+.PHONY : CMakeFiles/ep4.dir/all
 
 # Include target in all.
-all: CMakeFiles/EP4.dir/all
+all: CMakeFiles/ep4.dir/all
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/EP4.dir/rule: cmake_check_build_system
+CMakeFiles/ep4.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/beren/repositorios/mac0431-ep4/src/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/EP4.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/ep4.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/beren/repositorios/mac0431-ep4/src/CMakeFiles 0
-.PHONY : CMakeFiles/EP4.dir/rule
+.PHONY : CMakeFiles/ep4.dir/rule
 
 # Convenience name for target.
-EP4: CMakeFiles/EP4.dir/rule
-.PHONY : EP4
+ep4: CMakeFiles/ep4.dir/rule
+.PHONY : ep4
 
 # clean rule for target.
-CMakeFiles/EP4.dir/clean:
-	$(MAKE) -f CMakeFiles/EP4.dir/build.make CMakeFiles/EP4.dir/clean
-.PHONY : CMakeFiles/EP4.dir/clean
+CMakeFiles/ep4.dir/clean:
+	$(MAKE) -f CMakeFiles/ep4.dir/build.make CMakeFiles/ep4.dir/clean
+.PHONY : CMakeFiles/ep4.dir/clean
 
 # clean rule for target.
-clean: CMakeFiles/EP4.dir/clean
+clean: CMakeFiles/ep4.dir/clean
 .PHONY : clean
 
 #=============================================================================
