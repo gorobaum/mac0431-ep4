@@ -154,15 +154,22 @@ float* loadMatrix(char* fileName) {
   sizeR = atoi(line);
   fgets(line, 256, pFile);
   sizeC = atoi(line);
-
+  printf("Linha = %d\nColuna = %d\n", sizeR, sizeC);
   sizeOfMatrix = sizeof(float)*sizeR*sizeC;
   MatrixA = malloc(sizeOfMatrix);
   for ( i = 0; i < sizeR; i++ ) {
     for ( j = 0; j < sizeC; j++ ) {
       fgets(line, 256, pFile);
-      MatrixA[i*sizeR+j] = atof(line);
+      MatrixA[i*sizeC+j] = atof(line);
     }
   }
+
+  for( i = 0; i < sizeR; i++ ) {
+    for( j = 0; j< sizeC; j++ ) {
+      printf("A[%d][%d] = %f\n", i, j, MatrixA[i*sizeC+j]);
+    }
+  }
+
   return MatrixA;
 }
 
@@ -217,7 +224,7 @@ int opencl_run_kernel(char* fileName) {
 
   for( i = 0; i < sizeR; i++ ) {
     for( j = 0; j< sizeC; j++ ) {
-      printf("B[%d][%d] = %f\n", i, j, MatrixB[i*sizeR+j]);
+      printf("B[%d][%d] = %f\n", i, j, MatrixB[i*sizeC+j]);
     }
   }
 
