@@ -15,11 +15,11 @@ cl_command_queue queue;
 cl_kernel kernel;
 cl_program program;
 cl_event event;
-cl_mem opclMatrizInicial, opclMatriz, shifts;
+cl_mem opclMatrizInicial, opclMatriz, shifts, axisShift;
 cl_ulong start, finish;
 double total = 0;
 size_t sizeOfMatrix;
-int sizeR, sizeC;
+int sizeR, sizeC, axis = 1;
 
 /* Informações sobre os devices */
 unsigned int devices_found;
@@ -199,17 +199,21 @@ void prepare_kernel(char* fileName) {
   if (error != CL_SUCCESS) printf("Erro na memoria\n");
   shifts = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int), NULL, &error);
   if (error != CL_SUCCESS) printf("Erro na memoria\n");
+  axisShift = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int), NULL, &error);
+  if (error != CL_SUCCESS) printf("Erro na memoria\n");
 
   clEnqueueWriteBuffer(queue, opclMatrizInicial, CL_TRUE, 0, sizeOfMatrix, MatrixA, 0, NULL, &event);
   clEnqueueWriteBuffer(queue, rowSize, CL_TRUE, 0, sizeof(int), &sizeR, 0, NULL, &event);
   clEnqueueWriteBuffer(queue, columnSize, CL_TRUE, 0, sizeof(int), &sizeC, 0, NULL, &event);
   clEnqueueWriteBuffer(queue, shifts, CL_TRUE, 0, sizeof(int), &numberShift, 0, NULL, &event);
+  clEnqueueWriteBuffer(queue, axisShift, CL_TRUE, 0, sizeof(int), &axis, 0, NULL, &event);
 
   clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&opclMatrizInicial);
   clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&opclMatriz);
   clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&rowSize);
   clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&columnSize);
   clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&shifts);
+  clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&axisShift);
 
   clFinish(queue);
   free(MatrixA);

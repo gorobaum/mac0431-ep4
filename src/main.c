@@ -25,12 +25,12 @@ int iniciar_opencl() {
     return -1;
   }
 
-  if ( opencl_create_program("/home/beren/repositorios/mac0431-ep4/src/kernel.cl") <= 0 ) {
+  if ( opencl_create_program("/home/beren/repositorios/mac0431-ep4/src/shift.cl") <= 0 ) {
     printf("Erro na criação do programa\n");
     return -1;
   }
 
-  if ( opencl_create_kernel("shiftRow") <= 0 ) {
+  if ( opencl_create_kernel("shift") <= 0 ) {
     printf("Erro na criação do kernel\n");
     return -1;
   }
