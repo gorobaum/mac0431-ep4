@@ -30,7 +30,7 @@ int iniciar_opencl() {
     return -1;
   }
 
-  if ( opencl_create_kernel("macaco") <= 0 ) {
+  if ( opencl_create_kernel("shiftRow") <= 0 ) {
     printf("Erro na criação do kernel\n");
     return -1;
   }
