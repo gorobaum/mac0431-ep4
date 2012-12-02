@@ -151,7 +151,7 @@ void printMatrix(float* Matrix, char* message) {
 
 float* loadMatrix(char* fileName) {
   FILE *pFile;
-  float* MatrixA;
+  float* Matriz;
   char line[256];
   int i, j;
 
@@ -167,27 +167,24 @@ float* loadMatrix(char* fileName) {
   sizeC = atoi(line);
   printf("Linha = %d\nColuna = %d\n", sizeR, sizeC);
   sizeOfMatrix = sizeof(float)*sizeR*sizeC;
-  MatrixA = malloc(sizeOfMatrix);
+  Matriz = malloc(sizeOfMatrix);
   for ( i = 0; i < sizeR; i++ ) {
     for ( j = 0; j < sizeC; j++ ) {
       fgets(line, 256, pFile);
-      MatrixA[i*sizeC+j] = atof(line);
+      Matriz[i*sizeC+j] = atof(line);
     }
   }
 
-  printMatrix(MatrixA, "Matriz Inicial:");
+  printMatrix(Matriz, "Matriz Inicial:");
 
-  return MatrixA;
+  return Matriz;
 }
 
-void prepare_kernel(char* fileName) {
-  float* MatrixA;
-  int i, j, numberShift;
+void prepare_kernel() {
+  int i, j;
   cl_int error;
   cl_mem rowSize, columnSize;
 
-  MatrixA = loadMatrix(fileName);
-  numberShift = 1;
   /* Criação dos buffers que o OpenCL vai usar. */
   opclMatrizInicial = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeOfMatrix, NULL, &error);
   if (error != CL_SUCCESS) printf("Erro na memoria\n");
@@ -202,11 +199,8 @@ void prepare_kernel(char* fileName) {
   axisShift = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int), NULL, &error);
   if (error != CL_SUCCESS) printf("Erro na memoria\n");
 
-  clEnqueueWriteBuffer(queue, opclMatrizInicial, CL_TRUE, 0, sizeOfMatrix, MatrixA, 0, NULL, &event);
   clEnqueueWriteBuffer(queue, rowSize, CL_TRUE, 0, sizeof(int), &sizeR, 0, NULL, &event);
   clEnqueueWriteBuffer(queue, columnSize, CL_TRUE, 0, sizeof(int), &sizeC, 0, NULL, &event);
-  clEnqueueWriteBuffer(queue, shifts, CL_TRUE, 0, sizeof(int), &numberShift, 0, NULL, &event);
-  clEnqueueWriteBuffer(queue, axisShift, CL_TRUE, 0, sizeof(int), &axis, 0, NULL, &event);
 
   clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&opclMatrizInicial);
   clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&opclMatriz);
@@ -216,29 +210,40 @@ void prepare_kernel(char* fileName) {
   clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&axisShift);
 
   clFinish(queue);
-  free(MatrixA);
 }
 
 int opencl_run_kernel(char* fileName) {
   size_t work_dim[2];
+  char entrada[32];
   float *Matriz;
-  int i, j;
+  int i, j, numberShift = 0;
 
-  prepare_kernel(fileName);
-  
-  Matriz = malloc(sizeOfMatrix);
+  Matriz = loadMatrix(fileName);
+  prepare_kernel();
   work_dim[0] = sizeR;
-  work_dim[1] = sizeC;
-  clEnqueueNDRangeKernel(queue, kernel, 2, NULL, work_dim, NULL, 0, NULL, &event);
-  clReleaseEvent(event);
-  clFinish(queue);
+  work_dim[1] = sizeC;   
+  
+  while (1) {
+    printf("Digite 0 para column-shift, 1 para row-shift ou q para sair:\n");
+    gets(entrada);
+    if (strcmp(entrada, "q") == 0 ) break;
+    axis = atoi(entrada);
+    printf("Digite o número de shifts:\n");
+    gets(entrada);
+    numberShift = atoi(entrada);
+    clEnqueueWriteBuffer(queue, opclMatrizInicial, CL_TRUE, 0, sizeOfMatrix, Matriz, 0, NULL, &event);
+    clEnqueueWriteBuffer(queue, shifts, CL_TRUE, 0, sizeof(int), &numberShift, 0, NULL, &event);
+    clEnqueueWriteBuffer(queue, axisShift, CL_TRUE, 0, sizeof(int), &axis, 0, NULL, &event);
+    clEnqueueNDRangeKernel(queue, kernel, 2, NULL, work_dim, NULL, 0, NULL, &event);
+    clReleaseEvent(event);
+    clFinish(queue);
 
-  if( clEnqueueReadBuffer(queue, opclMatriz, CL_TRUE, 0, sizeOfMatrix, Matriz, 0, NULL, &event) 
-      != CL_SUCCESS ) printf("ERRROROOO\n");
-  clReleaseEvent(event);
+    if( clEnqueueReadBuffer(queue, opclMatriz, CL_TRUE, 0, sizeOfMatrix, Matriz, 0, NULL, &event) 
+        != CL_SUCCESS ) printf("ERRROROOO\n");
+    clReleaseEvent(event);
 
-  printMatrix(Matriz, "Matriz Shift-Row:");
-
+    printMatrix(Matriz, "Matriz Shift-Row:");
+  }
   free(Matriz);
   return 1;
 }
