@@ -187,7 +187,7 @@ void prepare_kernel(char* fileName) {
   cl_mem rowSize, columnSize;
 
   MatrixA = loadMatrix(fileName);
-  numberShift = 10;
+  numberShift = 1;
   /* Criação dos buffers que o OpenCL vai usar. */
   opclMatrizInicial = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeOfMatrix, NULL, &error);
   if (error != CL_SUCCESS) printf("Erro na memoria\n");
