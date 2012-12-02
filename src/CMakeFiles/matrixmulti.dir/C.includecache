@@ -6,13 +6,13 @@
 
 #IncludeRegexTransform: 
 
-/home/beren/repositorios/mac0431-ep4/opencl12/CL/cl.h
+./../opencl12/CL/cl.h
 OpenCL/cl_platform.h
 -
 CL/cl_platform.h
 -
 
-/home/beren/repositorios/mac0431-ep4/opencl12/CL/cl_ext.h
+./../opencl12/CL/cl_ext.h
 OpenCL/cl.h
 -
 AvailabilityMacros.h
@@ -20,19 +20,19 @@ AvailabilityMacros.h
 CL/cl.h
 -
 
-/home/beren/repositorios/mac0431-ep4/opencl12/CL/cl_gl.h
+./../opencl12/CL/cl_gl.h
 OpenCL/cl.h
 -
 CL/cl.h
 -
 
-/home/beren/repositorios/mac0431-ep4/opencl12/CL/cl_gl_ext.h
+./../opencl12/CL/cl_gl_ext.h
 OpenCL/cl_gl.h
 -
 CL/cl_gl.h
 -
 
-/home/beren/repositorios/mac0431-ep4/opencl12/CL/cl_platform.h
+./../opencl12/CL/cl_platform.h
 AvailabilityMacros.h
 -
 stdint.h
@@ -56,7 +56,7 @@ intrin.h
 immintrin.h
 -
 
-/home/beren/repositorios/mac0431-ep4/opencl12/CL/opencl.h
+./../opencl12/CL/opencl.h
 OpenCL/cl.h
 -
 OpenCL/cl_gl.h

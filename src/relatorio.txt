@@ -1,0 +1,24 @@
+MAC0431-2012: Introdução à Computação Paralela e Distribuída
+Quarto Exercício-Programa
+
+Alunos:                     Nº USP:
+  Thiago de Gouveia Nunes     6797289
+  Wilson Kazuo Mizutani       6797230
+
+
+Entrada:
+	O arquivo de entrada segue o seguinte padrão:
+	Na primeira linha é definido o número de linahs da matriz.
+	Na segunda linha o número de colunas da matriz.
+	A partir daí, cada nova linha do arquivo determina um elemento novo da matriz, preenchendo a matriz por linhas, ou seja, seja N o número de linhas da matriz,
+	o N+1 elemento lido estará na primeira coluna e segunda linha da matriz.
+
+	Ao rodar o programa, o usuário pode definir o tipo de rotação e o número de rotações da matriz.
+	Ao final de cada operação a matriz resultante é impressa na tela.
+
+Compilação:
+	Para compilar o programa basta rodar os seguintes comandos na pasta src:
+	$ cmake .
+	$ make
+
+	Dado que a AMD-APP-SDK esteja instalada no sistema o programa deve compilar sem erros.

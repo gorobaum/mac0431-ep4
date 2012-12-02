@@ -151,12 +151,6 @@ CMAKE_USE_RELATIVE_PATHS:BOOL=OFF
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//Value Computed by CMake
-EP4_BINARY_DIR:STATIC=/home/beren/repositorios/mac0431-ep4/src
-
-//Value Computed by CMake
-EP4_SOURCE_DIR:STATIC=/home/beren/repositorios/mac0431-ep4/src
-
 //Path to a library.
 OPENCL:FILEPATH=/usr/lib/libOpenCL.so
 
