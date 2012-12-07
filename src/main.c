@@ -14,7 +14,7 @@ int iniciar_opencl() {
     printf("Erro na busca por devices!\n");
     return -1;
   }
-
+  
   if ( opencl_create_context() <= 0 ) {
     printf("Erro na criação do contexto!\n");
     return -1;
@@ -25,7 +25,7 @@ int iniciar_opencl() {
     return -1;
   }
 
-  if ( opencl_create_program("/home/beren/repositorios/mac0431-ep4/src/shift.cl") <= 0 ) {
+  if ( opencl_create_program("shift.cl") <= 0 ) {
     printf("Erro na criação do programa\n");
     return -1;
   }

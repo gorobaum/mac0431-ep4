@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "opcl.h"
 
@@ -38,6 +39,7 @@ unsigned int opencl_create_platform(unsigned int num_platforms) {
       clGetPlatformInfo( platform[i], CL_PLATFORM_NAME, MAXSTR, &name, NULL );
       if (strcmp(name, "AMD Accelerated Parallel Processing") == 0) {
         platform_of_choice = platform[i];
+	break;
       }
     }
     return num_platforms_found;
@@ -51,13 +53,12 @@ unsigned int opencl_get_devices_id(cl_device_type device_type) {
   /* Achando o número de devices na máquina */
   clGetDeviceIDs(platform_of_choice, device_type, 0, NULL, &devices_found);
   devices = malloc(devices_found*(sizeof(cl_device_id)));
-  
   if ( clGetDeviceIDs(platform_of_choice, device_type, devices_found, devices, NULL) 
       == CL_SUCCESS ) 
   {
     /* As duas linhas abaixo são usadas para teste. */
     /*clGetDeviceInfo( devices[device_used], CL_DEVICE_VENDOR, sizeof(unsigned int), &name, NULL );
-    printf("Vendor do Device %s\n",name);*/
+    rintf("Vendor do Device %s\n",name);*/
     return devices_found;
   }
   else return -1;

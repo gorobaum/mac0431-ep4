@@ -1,2 +1,0 @@
-/usr/bin/ar cr libmatrixmulti.a  CMakeFiles/matrixmulti.dir/opcl.c.o
-/usr/bin/ranlib libmatrixmulti.a

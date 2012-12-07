@@ -1,2 +1,0 @@
-/home/beren/repositorios/mac0431-ep4/src/CMakeFiles/ep4.dir
-/home/beren/repositorios/mac0431-ep4/src/CMakeFiles/matrixmulti.dir
