@@ -6,6 +6,10 @@ Alunos:                     Nº USP:
   Wilson Kazuo Mizutani       6797230
 
 
+Desenvolvimento:
+	O EP foi desenvolvido usando um ambiente próprio. Testei em sistema com CPU Intel/GPU Nvidia e CPU ATI/GPU ATI e o EP rodou sem problemas.
+	Eu assumo que o primeiro device da plataforma ATI é a GPU, e nesses sistemas essa suposição foi verdadeira.
+
 Entrada:
 	O arquivo de entrada segue o seguinte padrão:
 	Na primeira linha é definido o número de linahs da matriz.
